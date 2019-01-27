@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'requests.dart';
-import 'package:aggiewalk/markers.dart';
+
+import 'package:aggiewalk/form.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -10,6 +11,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+    // home: MyApp(),
+    // Start the app with the "/" named route. In our case, the app will start
+    // on the FirstScreen Widget
+    initialRoute: '/',
+    routes: {
+      // When we navigate to the "/" route, build the FirstScreen Widget
+   
+      '/form': (context) => FormSubmission(),
+    
+      //'/AllEvents': (BuildContext context) => new Eventslist()
+      // When we navigate to the "/second" route, build the SecondScreen Widget
+      //'/second': (context) => TeamViewData()
+    },
+    debugShowCheckedModeBanner: false,
       title: 'Aggie Help',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -40,32 +55,28 @@ class _MyHomePageState extends State<MyHomePage> {
         child:
     Scaffold(
         appBar: AppBar(
+            centerTitle: true,
             actions: <Widget>[
+                
                 IconButton(icon: Icon(Icons.refresh),onPressed: (){
                     myController.clearMarkers();
                     populateMarkers();
+                },),
+                IconButton(icon: Icon(Icons.forum),onPressed: (){
+                    Navigator.pushNamed(context, '/form');
                 },)
             ],
-           bottom:  TabBar(
-        tabs: [
-          Tab(icon: Icon(Icons.map)),
-          Tab(icon: Icon(Icons.list)),
-          Tab(icon: Icon(Icons.forum)),
-        ]),
+         
             backgroundColor: Color.fromRGBO(128, 0, 0, 1.0),
             title: Text("Aggies Help"),
         ),
        // This trailing comma makes auto-formatting nicer for build methods.
        body: 
-       TabBarView(
-           children: <Widget>[
-                   Stack(
-           alignment: AlignmentDirectional.bottomStart,
-           children: <Widget>[
                Container(
                    height: MediaQuery.of(context).size.height -100,
                    width: MediaQuery.of(context).size.width,
                    child: GoogleMap(
+                       //gestureRecognizers: gestorre,
                        onMapCreated: (controller) {
                            setState(() {
                             myController = controller; 
@@ -87,12 +98,11 @@ class _MyHomePageState extends State<MyHomePage> {
                        ),
                    ),
                ),
-        
-           ],
-       ),
+                
+           
+       
+       //FormSubmission(),
 
-           ],
-       )
        
        
    
@@ -103,6 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
  
     super.initState();
+    
     populateMarkers();
     print('INIT');
 
