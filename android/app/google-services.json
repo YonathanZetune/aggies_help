@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "2474329686",
+    "firebase_url": "https://tamuhack2019-81750.firebaseio.com",
+    "project_id": "tamuhack2019-81750",
+    "storage_bucket": "tamuhack2019-81750.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2474329686:android:466640c72146a355",
+        "android_client_info": {
+          "package_name": "com.example.aggiewalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "2474329686-vadbqrf1efstmh7hj3mpif1pfmhr1e04.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLML4WwS7watbVM_g0fz_i2ArLhIRItrM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
