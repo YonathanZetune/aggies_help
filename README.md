@@ -1,4 +1,4 @@
-# Aggies Connect
+# Aggies Connect - TAMUHack 2019
 
 ## Inspiration
   No matter what college a student attends, finding the people you connect with can sometimes take a while. Traditionally, students meet others in classes or the few clubs they join throughout their college career. While this is good, there are many others smaller groups around campus that could be something much more to the students, yet there is no way for an individual to advertise their group meeting. A lot of times its the small sporatic decisions that lead to meeting the most interesting people in your life.
