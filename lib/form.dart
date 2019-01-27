@@ -2,24 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location/location.dart';
-class FormSubmission extends StatelessWidget {
-    static Map<String, dynamic> myForm; 
 
-    Future<Map<String, dynamic>> getCurrentLocation() async{
-        var currentLocation = <String, double>{};
-        var location = Location();
-        try {
-        currentLocation = await location.getLocation().then((value){
-            myForm['Location'].latitude = value[0];
-            print(value[0]);
-            myForm['Location'].longitude = value[1];
-        });
-        } on PlatformException {
-        currentLocation = null;
-        }
-        
-        return currentLocation;
-    }
+
+class FormPage extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +12,35 @@ class FormSubmission extends StatelessWidget {
             backgroundColor: Color.fromRGBO(128, 0, 0, 1.0),
             title: Text('Event/Walk Submission'),
         ),
-        body: SafeArea(
+        body: FormSubmission(),
+    );
+  }
+}
+   
+  class FormSubmission extends StatefulWidget {
+      //FormSubmission({Key key}) : super(key: key);
+  @override
+  FormSubmissionState createState() {
+    return FormSubmissionState();
+  }
+}
+  
+
+  
+
+  class FormSubmissionState extends State<FormSubmission> {
+  // Create a global key that will uniquely identify the Form widget and allow
+  // us to validate the form
+   static Map<String, dynamic> myForm = Map<String, dynamic>();
+  // Note: This is a `GlobalKey<FormState>`, not a GlobalKey<MyCustomFormState>!
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    // Build a Form widget using the _formKey we created above
+    return Form(
+      key: _formKey,
+      child: SafeArea(
           top: false,
           bottom: false,
           child: new Form(
@@ -36,43 +49,61 @@ class FormSubmission extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 children: <Widget>[
                   new TextFormField(
+                      validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some text';
+              }else{
+                  myForm['Person'] = value;
+              }
+            },
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.person),
                       hintText: 'Enter your name',
                       labelText: 'Name',
                     ),
-                    onSaved: (input){ 
-                  myForm['Person'] = input;
-                  },
                   ),
                      new TextFormField(
+                    validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some text';
+              }else{
+                  myForm['Description'] = value;
+              }
+            },
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.description),
                       hintText: 'Enter your event description',
                       labelText: 'Description',
                     ),
-                    onSaved: (input){ 
-                  myForm['Description'] = input;
-                  },
+                  
                   ),
                   new TextFormField(
+                      validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some text';
+              }else{
+                  myForm['Phone'] = value;
+              }
+            },
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.phone),
                       hintText: 'Enter a phone number',
                       labelText: 'Phone',
                     ),
-                     onSaved: (input){ 
-                  myForm['Phone'] = input;
-                  },
+                     
                     keyboardType: TextInputType.phone,
                     inputFormatters: [
                       WhitelistingTextInputFormatter.digitsOnly,
                     ],
                   ),
                   new TextFormField(
-                       onSaved: (input){ 
-                  myForm['Event Name'] = input;
-                  },
+                      validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some text';
+              }else{
+                  myForm['Event Name'] = value;
+              }
+            },
                     decoration: const InputDecoration(
                       icon: const Icon(Icons.title),
                       hintText: 'Enter a name for event',
@@ -80,6 +111,7 @@ class FormSubmission extends StatelessWidget {
                     ),
                     keyboardType: TextInputType.emailAddress,
                   ),
+                  
                   new 
                   Row(children: [
                       Icon(Icons.info),
@@ -91,15 +123,34 @@ class FormSubmission extends StatelessWidget {
                   new Container(
                       padding: const EdgeInsets.only(left: 40.0, top: 20.0),
                       
-                          child:new RaisedButton(
+                        child:new RaisedButton(
                         child: const Text('Submit'),
                         onPressed: (){
+                            if (_formKey.currentState.validate()) {
+                  // If the form is valid, we want to show a Snackbar
+                        getCurrentLocation(false);
                             
-                            //var myLoc = getCurrentLocation();
+                        Scaffold.of(context)
+                      .showSnackBar(SnackBar(content: Text('Processing Data')));
+                      Navigator.pop(context);
+                }
+                         }),
+                      ),
+                new Container(
+                      padding: const EdgeInsets.only(left: 40.0, top: 20.0),
+                      
+                        child:new RaisedButton(
+                        child: const Text('Request a walk'),
+                        onPressed: (){
+                            if (_formKey.currentState.validate()) {
+                  // If the form is valid, we want to show a Snackbar
+                        getCurrentLocation(true);
                             
-                            Firestore.instance.collection('Events').document().setData(myForm);
-
-                        }),
+                        Scaffold.of(context)
+                      .showSnackBar(SnackBar(content: Text('Processing Data')));
+                      Navigator.pop(context);
+                }
+                         }),
                       ),
                   
                       
@@ -111,3 +162,23 @@ class FormSubmission extends StatelessWidget {
     );
   }
 }
+    Future<void> getCurrentLocation(bool isWalk) async{
+        var currentLocation;
+        var location = Location();
+        try {
+        currentLocation = await location.getLocation().then((value){
+             FormSubmissionState.myForm['Location'] =  GeoPoint((value.values.toList()[2]), (value.values.toList()[3]));
+             FormSubmissionState.myForm['isWalk'] = isWalk;
+            print('VAL:' + value.toString());
+            print('FORM:' + value.toString());
+ 
+            Firestore.instance.collection('Events').document().setData(FormSubmissionState.myForm);
+        });
+        } on PlatformException {
+        //currentLocation = null;
+        }
+        
+        //return currentLocation;
+    }
+    
+

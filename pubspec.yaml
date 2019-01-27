@@ -36,6 +36,8 @@ dev_dependencies:
 flutter:
   assets:
     - assets/study.png
+    - assets/help.png
+    - assets/walk.png
     
 
 

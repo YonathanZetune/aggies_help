@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'requests.dart';
-
 import 'package:aggiewalk/form.dart';
 void main() => runApp(MyApp());
 
@@ -18,7 +16,7 @@ class MyApp extends StatelessWidget {
     routes: {
       // When we navigate to the "/" route, build the FirstScreen Widget
    
-      '/form': (context) => FormSubmission(),
+      '/form': (context) => FormPage(),
     
       //'/AllEvents': (BuildContext context) => new Eventslist()
       // When we navigate to the "/second" route, build the SecondScreen Widget
@@ -68,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
          
             backgroundColor: Color.fromRGBO(128, 0, 0, 1.0),
-            title: Text("Aggies Help"),
+            title: Text("Aggies Connect"),
         ),
        // This trailing comma makes auto-formatting nicer for build methods.
        body: 
@@ -84,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
                            });
                        },
                        options: GoogleMapOptions(
-                           mapType: MapType.satellite,
+                           mapType: MapType.normal,
                            zoomGesturesEnabled: true,
                            rotateGesturesEnabled: true,
                            tiltGesturesEnabled: false,
@@ -133,10 +131,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   initMarker(event){
       myController.clearMarkers().then((val) {
-          myController.addMarker(MarkerOptions(icon: BitmapDescriptor.fromAsset('assets/study.png'),position: LatLng(event['Location'].latitude, event['Location'].longitude
+          BitmapDescriptor eventIcon;
+          if(event['isWalk']==true){
+           eventIcon = BitmapDescriptor.fromAsset('assets/walk.png');
+          }else{
+            eventIcon = BitmapDescriptor.fromAsset('assets/study.png');
+          }
+          myController.addMarker(MarkerOptions(icon: eventIcon, position: LatLng(event['Location'].latitude, event['Location'].longitude
           ),
           draggable: false,
-          infoWindowText: InfoWindowText(event['Event Name'], event['Description'])));
+          infoWindowText: InfoWindowText(event['Event Name'], event['Description']+ '\n' + event['Phone'] + ' -- '+ event['Person'])));
           
       });
 
